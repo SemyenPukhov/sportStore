@@ -1,0 +1,61 @@
+<div class="container-fluid p-0">
+  <div class="navbar navbar-dark bg-dark">
+    <a class="navbar-brand">SPORTS STORE</a>
+    <cart-summary></cart-summary>
+  </div>
+  <div class="row m-0 p-3">
+    <div class="col-md-3 col-sm-12 bg-light p-a-1">
+      <button class="btn btn-outline-secondary btn-block" (click)="changeCategory()">
+        Home
+      </button>
+      <button
+        *ngFor="let cat of categories"
+        class="btn btn-outline-secondary
+                  btn-block"
+        [class.active]="cat == selectedCategory"
+        (click)="changeCategory(cat)"
+      >
+        {{ cat }}
+      </button>
+    </div>
+    <div class="col-md-9 col-sm-12 p-3">
+      <div *ngFor="let product of products" class="card my-2">
+        <h4 class="card-header">
+          {{ product.name }}
+          <span class="pull-right tag tag-pill badge badge-primary badge-pill float-right">
+            {{ product.price | currency: 'USD':'symbol':'2.2-2' }}
+          </span>
+        </h4>
+        <div class="card-body">
+          <h5 class="card-title">Специальный заголовок</h5>
+          <p class="card-text p-a-1">{{ product.description }}</p>
+
+          <button class="btn btn-success btn-sm float-right" (click)="addProductToCart(product)">
+            Add To Cart
+          </button>
+        </div>
+      </div>
+      <!-- <div class="row"> -->
+      <div class="form-inline m-r-1 float-left">
+        <select class="form-control" [value]="productsPerPage" (change)="changePageSize($event.target.value)">
+          <option value="3">3 per Page</option>
+          <option value="4">4 per Page</option>
+          <option value="6">6 per Page</option>
+          <option value="8">8 per Page</option>
+        </select>
+      </div>
+
+      <div class="btn-group float-right">
+        <button
+          *counter="let page of pageCount"
+          (click)="changePage(page)"
+          class="btn btn-outline-primary"
+          [class.active]="page == selectedPage"
+        >
+          {{ page }}
+        </button>
+      </div>
+      <!-- </div> -->
+    </div>
+  </div>
+</div>
