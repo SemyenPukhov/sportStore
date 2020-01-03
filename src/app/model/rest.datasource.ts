@@ -1,10 +1,13 @@
+import { HttpClient, HttpHeaders, HttpRequest } from '@angular/common/http';
+
 import { Cart } from './cart.model';
-import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Order } from './order.model';
 import { Product } from './product.model';
 import { map } from 'rxjs/operators';
+
+type RequestMethod = 'GET' | 'POST' | 'PUT' | 'DELETE';
 
 const PROTOCOL = 'http';
 const PORT = 3500;
@@ -12,24 +15,76 @@ const PORT = 3500;
 @Injectable()
 export class RestDataSource {
   baseUrl: string;
+  auth_token: string;
 
   constructor(private http: HttpClient) {
     this.baseUrl = `${PROTOCOL}://${location.hostname}:${PORT}/`;
   }
 
+  authenticate(user: string, pass: string): Observable<boolean> {
+    return this.http.request('POST', this.baseUrl + 'login', { body: { name: user, password: pass } }).pipe(
+      map((response: any) => {
+        this.auth_token = response.success ? response.token : null;
+
+        return response.success;
+      })
+    );
+  }
+
   getProducts(): Observable<Product[]> {
-    return this.get('products');
+    return this.sendRequest('GET', 'products');
   }
 
   saveOrder(order: Order): Observable<Order> {
-    return this.post('orders', order);
+    return this.sendRequest('POST', 'orders', order);
   }
 
-  get(url: string): Observable<any> {
-    return this.http.get(this.baseUrl + url).pipe(map(response => response));
+  saveProduct(product: Product): Observable<Product> {
+    return this.sendRequest('POST', 'products', product, true);
   }
 
-  post(url: string, body?: Product | Order): Observable<any> {
-    return this.http.post(this.baseUrl + url, body).pipe(map(response => response));
+  deleteProduct(id: number): Observable<Product> {
+    return this.sendRequest('DELETE', `products/${id}`, null, true);
+  }
+
+  updateProduct(product): Observable<Product> {
+    return this.sendRequest('PUT', `products/${product.id}`, product, true);
+  }
+
+  getOrders(): Observable<Order[]> {
+    return this.sendRequest('GET', 'orders', null, true);
+  }
+
+  deleteOrder(id: number): Observable<Order> {
+    return this.sendRequest('DELETE', `orders/${id}`, null, true);
+  }
+
+  updateOrder(order: Order): Observable<Order> {
+    return this.sendRequest('PUT', `orders/${order.id}`, order, true);
+  }
+
+  requestOptions(auth: boolean = false) {
+    const options = {};
+
+    if (auth && this.auth_token != null) {
+      options['Authorization'] = `Bearer<${this.auth_token}>`;
+    }
+
+    return options;
+  }
+
+  private sendRequest(
+    verb: RequestMethod,
+    url: string,
+    body?: Product | Order,
+    auth: boolean = false
+  ): Observable<any> {
+    const headers = new HttpHeaders();
+
+    if (auth && this.auth_token != null) {
+      headers.set('Authorization', `Bearer<${this.auth_token}>`);
+    }
+
+    return this.http.request(verb, this.baseUrl + url, { body, headers });
   }
 }
