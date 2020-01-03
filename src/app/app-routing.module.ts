@@ -23,6 +23,11 @@ const routes: Routes = [
     canActivate: [StoreFirstGuard],
   },
   {
+    path: 'admin',
+    loadChildren: 'src/app/admin/admin.module#AdminModule',
+    canActivate: [StoreFirstGuard],
+  },
+  {
     path: '**',
     redirectTo: '/store',
   },
