@@ -1,3 +1,19 @@
-<div class="bg-info p-a-1">
-  <h3>Placeholder for Admin Features</h3>
+<div class="navbar navbar-dark bg-dark">
+  <a class="navbar-brand">SPORTS STORE</a>
+</div>
+<div class="row p-3">
+  <div class="col-md-3 col-sm-12 mb-sm-2">
+    <button class="btn btn-outline-info btn-block" routerLink="/admin/main/products" routerLinkActive="active">
+      Products
+    </button>
+    <button class="btn btn-outline-info btn-block" routerLink="/admin/main/orders" routerLinkActive="active">
+      Orders
+    </button>
+    <button class="btn btn-outline-danger btn-block" (click)="logout()">
+      Logout
+    </button>
+  </div>
+  <div class="col-md-9 col-sm-12">
+    <router-outlet></router-outlet>
+  </div>
 </div>

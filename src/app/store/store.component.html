@@ -30,7 +30,7 @@
           </span>
         </h4>
         <div class="card-body">
-          <h5 class="card-title">Специальный заголовок</h5>
+          <!-- <h5 class="card-title">Специальный заголовок</h5> -->
           <p class="card-text p-a-1">{{ product.description }}</p>
 
           <button class="btn btn-success btn-sm float-right" (click)="addProductToCart(product)">
@@ -38,7 +38,6 @@
           </button>
         </div>
       </div>
-      <!-- <div class="row"> -->
       <div class="form-inline m-r-1 float-left">
         <select class="form-control" [value]="productsPerPage" (change)="changePageSize($event.target.value)">
           <option value="3">3 per Page</option>
@@ -58,7 +57,6 @@
           {{ page }}
         </button>
       </div>
-      <!-- </div> -->
     </div>
   </div>
 </div>

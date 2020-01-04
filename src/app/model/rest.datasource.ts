@@ -63,28 +63,18 @@ export class RestDataSource {
     return this.sendRequest('PUT', `orders/${order.id}`, order, true);
   }
 
-  requestOptions(auth: boolean = false) {
-    const options = {};
-
-    if (auth && this.auth_token != null) {
-      options['Authorization'] = `Bearer<${this.auth_token}>`;
-    }
-
-    return options;
-  }
-
   private sendRequest(
     verb: RequestMethod,
     url: string,
     body?: Product | Order,
     auth: boolean = false
   ): Observable<any> {
-    const headers = new HttpHeaders();
+    const headers = {};
 
     if (auth && this.auth_token != null) {
-      headers.set('Authorization', `Bearer<${this.auth_token}>`);
+      headers['Authorization'] = `Bearer<${this.auth_token}>`;
     }
 
-    return this.http.request(verb, this.baseUrl + url, { body, headers });
+    return this.http.request(verb, this.baseUrl + url, { body, headers: new HttpHeaders(headers) });
   }
 }
